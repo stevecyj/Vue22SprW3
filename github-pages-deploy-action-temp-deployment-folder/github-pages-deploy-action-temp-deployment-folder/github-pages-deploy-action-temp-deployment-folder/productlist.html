@@ -69,12 +69,14 @@
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
               <h5 class="modal-title" id="productModalLabel">
-                <span>新增產品</span>
+                <span v-if="isNew">新增產品</span>
+                <span v-else>編輯產品</span>
               </h5>
               <button aria-label="Close" class="btn-close" type="button" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
               <div class="row">
+                <!-- 左側 -->
                 <div class="col-sm-4">
                   <div class="mb-2">
                     <!-- 加入圖片 -->
@@ -92,24 +94,24 @@
                   </div>
                   <!-- 多圖 start-->
                   <div class="mb-3">
-                    <div v-if="Array.isArray(singleProduct.imageUrl)">
+                    <div v-if="Array.isArray(singleProduct.imagesUrl)">
                       <h5>設定多張圖片</h5>
-                      <template :key="key+'12345'" v-for="(img,key) in singleProduct.imageUrl">
+                      <template :key="key+'12345'" v-for="(img,key) in singleProduct.imagesUrl">
                         <input
                           class="form-control"
                           placeholder="請輸入圖片連結"
                           type="text"
-                          v-model="singleProduct.imageUrl[key]"
+                          v-model="singleProduct.imagesUrl[key]"
                         />
-                        <img :src="singleProduct.imageUrl[key]" alt="" class="img-fluid" />
+                        <img :src="singleProduct.imagesUrl[key]" alt="" class="img-fluid" />
                       </template>
 
-                      <!-- 陣列沒有元素時，新增一個。有元素時，檢查裡面有沒有字。透過陣列長度找索引。-->
+                      <!-- 陣列沒有元素時，顯示新增按鈕。有元素時，檢查最後一個元素有沒有字，有內容才顯示按鈕。透過陣列長度找索引。-->
                       <div
-                        v-if="!singleProduct.imageUrl.length||singleProduct.imageUrl[singleProduct.imageUrl.length-1]"
+                        v-if="!singleProduct.imagesUrl.length||singleProduct.imagesUrl[singleProduct.imagesUrl.length-1]"
                       >
                         <button
-                          @click="singleProduct.imageUrl.push('')"
+                          @click="singleProduct.imagesUrl.push('')"
                           class="btn btn-outline-primary btn-sm d-block w-100"
                           type="button"
                         >
@@ -119,7 +121,7 @@
                       <!-- 保留刪圖功能 -->
                       <div>
                         <button
-                          @click="singleProduct.imageUrl.pop()"
+                          @click="singleProduct.imagesUrl.pop()"
                           class="btn btn-outline-danger btn-sm d-block w-100"
                           type="button"
                         >
@@ -129,6 +131,7 @@
                     </div>
                   </div>
                 </div>
+                <!-- 右側 -->
                 <div class="col-sm-8">
                   <div class="mb-3">
                     <label class="form-label" for="title">標題</label>
@@ -230,7 +233,7 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">取消</button>
-              <button @click="addProduct" class="btn btn-primary" type="button">確認</button>
+              <button @click="updateProduct" class="btn btn-primary" type="button">確認</button>
             </div>
           </div>
         </div>
