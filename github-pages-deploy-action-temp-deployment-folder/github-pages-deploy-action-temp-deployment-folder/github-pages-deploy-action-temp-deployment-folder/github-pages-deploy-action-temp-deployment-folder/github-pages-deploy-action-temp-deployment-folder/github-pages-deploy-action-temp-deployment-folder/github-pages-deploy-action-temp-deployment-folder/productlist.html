@@ -20,7 +20,7 @@
       <!-- product list start-->
       <div class="container">
         <div class="text-end mt-4">
-          <button @click="openModal" class="btn btn-primary" type="button">建立新的產品</button>
+          <button @click="openModal('isNew')" class="btn btn-primary" type="button">建立新的產品</button>
         </div>
         <table class="table mt-4">
           <thead>
@@ -37,15 +37,15 @@
             <tr :key="item.id" v-for="item in products">
               <td>{{item.category}}</td>
               <td>{{item.title}}</td>
-              <td class="text-end">{{item.origin_price}}</td>
-              <td class="text-end">{{item.price}}</td>
+              <td class="text-start">{{item.origin_price}}</td>
+              <td class="text-start">{{item.price}}</td>
               <td>
                 <span class="text-success" v-if="item.is_enabled">啟用</span>
                 <span v-else>未啟用</span>
               </td>
               <td>
                 <div class="btn-group">
-                  <button class="btn btn-outline-primary btn-sm" type="button">編輯</button>
+                  <button @click="openModal('edit')" class="btn btn-outline-primary btn-sm" type="button">編輯</button>
                   <button class="btn btn-outline-danger btn-sm" type="button">刪除</button>
                 </div>
               </td>
@@ -75,6 +75,7 @@
               <div class="row">
                 <div class="col-sm-4">
                   <div class="mb-2">
+                    <!-- 加入圖片 -->
                     <div class="mb-3">
                       <label class="form-label" for="imageUrl">輸入圖片網址</label>
                       <input
@@ -87,11 +88,42 @@
                     </div>
                     <img :src="singleProduct.imageUrl" alt="" class="img-fluid" />
                   </div>
-                  <div>
-                    <button class="btn btn-outline-primary btn-sm d-block w-100">新增圖片</button>
-                  </div>
-                  <div>
-                    <button class="btn btn-outline-danger btn-sm d-block w-100">刪除圖片</button>
+                  <!-- 多圖 start-->
+                  <div class="mb-3">
+                    <div v-if="Array.isArray(singleProduct.imageUrl)">
+                      <template :key="key+'12345'" v-for="(img,key) in singleProduct.imageUrl">
+                        <input
+                          class="form-control"
+                          placeholder="請輸入圖片連結"
+                          type="text"
+                          v-model="singleProduct.imageUrl[key]"
+                        />
+                        <img :src="singleProduct.imageUrl[key]" alt="" class="img-fluid" />
+                      </template>
+
+                      <!-- 陣列沒有元素時，新增一個。有元素時，檢查裡面有沒有字。透過陣列長度找索引。-->
+                      <div
+                        v-if="!singleProduct.imageUrl.length||singleProduct.imageUrl[singleProduct.imageUrl.length-1]"
+                      >
+                        <button
+                          @click="singleProduct.imageUrl.push('')"
+                          class="btn btn-outline-primary btn-sm d-block w-100"
+                          type="button"
+                        >
+                          新增圖片
+                        </button>
+                      </div>
+                      <!-- 保留刪圖功能 -->
+                      <div>
+                        <button
+                          @click="singleProduct.imageUrl.pop()"
+                          class="btn btn-outline-danger btn-sm d-block w-100"
+                          type="button"
+                        >
+                          刪除圖片
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="col-sm-8">
@@ -195,7 +227,7 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">取消</button>
-              <button class="btn btn-primary" type="button">確認</button>
+              <button @click="addProduct" class="btn btn-primary" type="button">確認</button>
             </div>
           </div>
         </div>
