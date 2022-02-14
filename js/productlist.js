@@ -101,7 +101,7 @@ const app = createApp({
 
       axios[method](url, { data: this.singleProduct })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           this.getProducts(); // 再拿一次 list
           productModal.hide(); // close modal
         })
@@ -117,7 +117,7 @@ const app = createApp({
 
       axios[method](url)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           this.getProducts(); // 再拿一次 list
           delProductModal.hide(); // close modal
         })
